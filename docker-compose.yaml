@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: academic-tracker-api
+    ports:
+      - "8080:8080"
+    environment:
+      APP_PORT: "8080"
+      POSTGRES_DSN: "postgresql://academic-tracker-user:academic-tracker-password@postgres:5432/academic-tracker-db?sslmode=disable"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: academic-tracker-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: academic-tracker-user
+      POSTGRES_PASSWORD: academic-tracker-password
+      POSTGRES_DB: academic-tracker-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

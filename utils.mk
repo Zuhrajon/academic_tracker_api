@@ -1,0 +1,1 @@
+academic_tracker_postgres_dsn ?= postgresql://academic-tracker-user:academic-tracker-password@localhost:5432/academic-tracker-db?sslmode=disable
