@@ -5,6 +5,7 @@ import (
 	"academic-tracker-api/internal/repository"
 	"academic-tracker-api/internal/service"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 func main() {
@@ -15,5 +16,10 @@ func main() {
 	h := handler.NewHandler(services)
 	h.InitRoutes(router)
 
-	router.Run(":8080")
+	err := router.Run(":8080")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }

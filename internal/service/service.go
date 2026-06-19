@@ -1,13 +1,22 @@
 package service
 
-import "academic-tracker-api/internal/repository"
+import "academic-tracker-api/internal/model"
 
-type Service struct {
-	repository *repository.Repository
+type Repository interface {
+	GetStudents() []model.Student
+	GetStudentById(id int) (model.Student, bool)
 }
 
-func NewService(repository *repository.Repository) *Service {
+type Service struct {
+	repository Repository
+}
+
+func NewService(repository Repository) *Service {
 	return &Service{
 		repository: repository,
 	}
+}
+
+func (s *Service) GetStudents() []model.Student {
+	return s.repository.GetStudents()
 }
