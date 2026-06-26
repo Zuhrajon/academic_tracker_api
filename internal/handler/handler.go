@@ -8,6 +8,9 @@ import (
 type Service interface {
 	GetStudents() []model.Student
 	GetStudentById(id int) (model.Student, bool)
+	CreateStudents(student model.Student) (model.Student, error)
+	UpdateStudents(studentID int, student model.Student) (model.Student, error)
+	DeleteStudent(studentId int) error
 }
 
 type Handler struct {
@@ -22,5 +25,8 @@ func NewHandler(service Service) *Handler {
 
 func (h *Handler) InitRoutes(router *gin.Engine) {
 	router.GET("/students", h.GetStudents)
-	router.GET("/student/:id", h.GetStudentById)
+	router.GET("/students/:id", h.GetStudentById)
+	router.POST("/students", h.CreateStudents)
+	router.PUT("/students/:id", h.UpdateStudents)
+	router.DELETE("/students/:id", h.DeleteStudent)
 }
