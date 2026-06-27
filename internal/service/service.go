@@ -8,9 +8,12 @@ type Repository interface {
 	CreateStudents(student model.Student) (model.Student, error)
 	UpdateStudents(studentID int, student model.Student) (model.Student, error)
 	DeleteStudent(studentId int) error
-	GetSubject() []model.Subject
+
 	CreateSubjects(subject model.Subject) (model.Subject, error)
+	GetSubject() []model.Subject
 	GetSubjectById(id int) (model.Subject, bool)
+	UpdateSubject(subjectId int, subject model.Subject) (model.Subject, error)
+	DeleteSubjects(subjectId int) error
 }
 
 type Service struct {
