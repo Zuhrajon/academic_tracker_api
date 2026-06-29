@@ -7,25 +7,25 @@ import (
 	"strconv"
 )
 
-func (h *Handler) UpdateStudents(c *gin.Context) {
-	studentsIdStr := c.Param("id")
-	if studentsIdStr == "" {
+func (h *Handler) UpdateAttendance(c *gin.Context) {
+	attendanceIdStr := c.Param("id")
+	if attendanceIdStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid id",
 		})
 		return
 	}
 
-	studentsId, err := strconv.Atoi(studentsIdStr)
-	if err != nil || studentsId <= 0 {
+	attendanceId, err := strconv.Atoi(attendanceIdStr)
+	if err != nil || attendanceId <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid studentsId; must be a positive number.",
+			"error": "Invalid attendanceId; must be a positive number.",
 		})
 		return
 	}
 
-	var student model.Student
-	err = c.ShouldBindJSON(&student)
+	var attendance model.Attendance
+	err = c.ShouldBindJSON(&attendance)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid request body",
@@ -33,14 +33,16 @@ func (h *Handler) UpdateStudents(c *gin.Context) {
 		return
 	}
 
-	updatedStudent, err := h.service.UpdateStudents(studentsId, student)
+	updateAttendance, err := h.service.UpdateAttendance(attendanceId, attendance)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"student": updatedStudent,
+		"attendance": updateAttendance,
 	})
+
 }

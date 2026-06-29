@@ -17,6 +17,11 @@ type Service interface {
 	GetSubjectById(id int) (model.Subject, bool)
 	UpdateSubject(subjectId int, subject model.Subject) (model.Subject, error)
 	DeleteSubjects(subjectId int) error
+
+	CreateAttendance(attendance model.Attendance) (model.Attendance, error)
+	GetAttendanceByStudentID(studentID int) ([]model.Attendance, error)
+	UpdateAttendance(attendanceID int, attendance model.Attendance) (model.Attendance, error)
+	DeleteAttendance(attendanceId int) error
 }
 
 type Handler struct {
@@ -41,5 +46,10 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 	router.GET("/subjects/:id", h.GetSubjectById)
 	router.PUT("/subjects/:id", h.UpdateSubject)
 	router.DELETE("/subjects/:id", h.DeleteSubjects)
+
+	router.POST("/attendance", h.CreateAttendance)
+	router.GET("/students/:id/attendance", h.GetAttendanceByStudentID)
+	router.PUT("/attendance/:id", h.UpdateAttendance)
+	router.DELETE("/attendance/:id", h.DeleteAttendance)
 
 }

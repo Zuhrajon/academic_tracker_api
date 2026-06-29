@@ -13,4 +13,4 @@ CREATE TABLE students (
 
 
 -- +goose Down
-DROP TABLE students
+DROP TABLE students;

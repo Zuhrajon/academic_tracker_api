@@ -14,6 +14,11 @@ type Repository interface {
 	GetSubjectById(id int) (model.Subject, bool)
 	UpdateSubject(subjectId int, subject model.Subject) (model.Subject, error)
 	DeleteSubjects(subjectId int) error
+
+	CreateAttendance(attendance model.Attendance) (model.Attendance, error)
+	GetAttendanceByStudentID(studentID int) ([]model.Attendance, error)
+	UpdateAttendance(attendanceID int, attendance model.Attendance) (model.Attendance, error)
+	DeleteAttendance(attendanceId int) error
 }
 
 type Service struct {

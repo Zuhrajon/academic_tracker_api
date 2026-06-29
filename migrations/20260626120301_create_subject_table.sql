@@ -9,6 +9,5 @@ CREATE TABLE subjects (
 );
 
 
-
 -- +goose Down
 DROP TABLE subjects;
