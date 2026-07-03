@@ -3,7 +3,7 @@ include utils.mk
 .PHONY: up
 up:
 	docker compose up --force-recreate --build -d
-	make migration-up
+	$(MAKE) migration-up
 
 .PHONY: generate-migration
 # usage: make generate-migration name=create_students_table

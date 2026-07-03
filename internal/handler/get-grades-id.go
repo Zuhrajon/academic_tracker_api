@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func (h *Handler) GetAttendanceByStudentID(c *gin.Context) {
+func (h *Handler) GetGradesByStudentID(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -23,7 +23,7 @@ func (h *Handler) GetAttendanceByStudentID(c *gin.Context) {
 		return
 	}
 
-	getAttendance, err := h.service.GetAttendanceByStudentID(id)
+	getGrades, err := h.service.GetGradesByStudentID(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
@@ -32,7 +32,7 @@ func (h *Handler) GetAttendanceByStudentID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"attendance": getAttendance,
+		"grades": getGrades,
 	})
 
 }

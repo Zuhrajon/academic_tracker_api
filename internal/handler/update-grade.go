@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"academic-tracker-api/internal/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-func (h *Handler) GetAttendanceByStudentID(c *gin.Context) {
+func (h *Handler) UpdateGrade(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -18,12 +19,21 @@ func (h *Handler) GetAttendanceByStudentID(c *gin.Context) {
 
 	if id <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "id must be greater than zero",
+			"error": "id must not be less or equal to zero",
 		})
 		return
 	}
 
-	getAttendance, err := h.service.GetAttendanceByStudentID(id)
+	var grade model.Grade
+	err = c.ShouldBindJSON(&grade)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid request body",
+		})
+		return
+	}
+
+	updateGrade, err := h.service.UpdateGrade(id, grade)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
@@ -32,7 +42,7 @@ func (h *Handler) GetAttendanceByStudentID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"attendance": getAttendance,
+		"grade": updateGrade,
 	})
 
 }
