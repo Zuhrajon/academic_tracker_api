@@ -6,18 +6,18 @@ import (
 	"net/http"
 )
 
-func (h *Handler) CreateAttendance(c *gin.Context) {
-	var attendance model.Attendance
+func (h *Handler) CreateGrades(c *gin.Context) {
+	var grades model.Grade
 
-	err := c.ShouldBindJSON(&attendance)
+	err := c.ShouldBindJSON(&grades)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid request body",
+			"error": "bad request",
 		})
 		return
 	}
 
-	createAttendance, err := h.service.CreateAttendance(attendance)
+	createGrades, err := h.service.CreateGrades(grades)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -26,6 +26,7 @@ func (h *Handler) CreateAttendance(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"attendance": createAttendance,
+		"grades": createGrades,
 	})
+
 }

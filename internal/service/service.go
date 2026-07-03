@@ -19,6 +19,11 @@ type Repository interface {
 	GetAttendanceByStudentID(studentID int) ([]model.Attendance, error)
 	UpdateAttendance(attendanceID int, attendance model.Attendance) (model.Attendance, error)
 	DeleteAttendance(attendanceId int) error
+
+	CreateGrades(grades model.Grade) (model.Grade, error)
+	GetGradesByStudentID(studentID int) ([]model.Grade, error)
+	UpdateGrade(gradeID int, grade model.Grade) (model.Grade, error)
+	DeleteGrade(gradeID int) error
 }
 
 type Service struct {

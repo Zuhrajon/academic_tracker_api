@@ -6,9 +6,9 @@ import (
 )
 
 type Service interface {
+	CreateStudents(student model.Student) (model.Student, error)
 	GetStudents() []model.Student
 	GetStudentById(id int) (model.Student, bool)
-	CreateStudents(student model.Student) (model.Student, error)
 	UpdateStudents(studentID int, student model.Student) (model.Student, error)
 	DeleteStudent(studentId int) error
 
@@ -22,6 +22,11 @@ type Service interface {
 	GetAttendanceByStudentID(studentID int) ([]model.Attendance, error)
 	UpdateAttendance(attendanceID int, attendance model.Attendance) (model.Attendance, error)
 	DeleteAttendance(attendanceId int) error
+
+	CreateGrades(grades model.Grade) (model.Grade, error)
+	GetGradesByStudentID(studentID int) ([]model.Grade, error)
+	UpdateGrade(gradeID int, grade model.Grade) (model.Grade, error)
+	DeleteGrade(gradeID int) error
 }
 
 type Handler struct {
@@ -51,5 +56,10 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 	router.GET("/students/:id/attendance", h.GetAttendanceByStudentID)
 	router.PUT("/attendance/:id", h.UpdateAttendance)
 	router.DELETE("/attendance/:id", h.DeleteAttendance)
+
+	router.POST("/grades", h.CreateGrades)
+	router.GET("/students/:id/grades", h.GetGradesByStudentID)
+	router.PUT("/grades/:id", h.UpdateGrade)
+	router.DELETE("/grades/:id", h.DeleteGrade)
 
 }

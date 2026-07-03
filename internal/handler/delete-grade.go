@@ -6,24 +6,24 @@ import (
 	"strconv"
 )
 
-func (h *Handler) DeleteAttendance(c *gin.Context) {
-	attendanceStr := c.Param("id")
-	if attendanceStr == "" {
+func (h *Handler) DeleteGrade(c *gin.Context) {
+	idStr := c.Param("id")
+	if idStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid id",
 		})
 		return
 	}
 
-	attendanceId, err := strconv.Atoi(attendanceStr)
-	if err != nil || attendanceId <= 0 {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "Invalid studentID; must be a positive number.\n",
+	gradeId, err := strconv.Atoi(idStr)
+	if err != nil || gradeId <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid gradeId; must be a positive number.\n",
 		})
 		return
 	}
 
-	err = h.service.DeleteAttendance(attendanceId)
+	err = h.service.DeleteGrade(gradeId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
