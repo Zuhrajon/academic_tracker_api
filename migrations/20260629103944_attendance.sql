@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TABLE attendance (
+CREATE TABLE IF NOT EXISTS attendance (
     id BIGSERIAL PRIMARY KEY,
     student_id BIGINT NOT NULL REFERENCES students(id),
     subject_id BIGINT NOT NULL REFERENCES subjects(id),
@@ -11,4 +11,4 @@ CREATE TABLE attendance (
 );
 
 -- +goose Down
-DROP TABLE attendance;
+DROP TABLE IF EXISTS attendance;

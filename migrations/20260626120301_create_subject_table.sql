@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TABLE subjects (
+CREATE TABLE IF NOT EXISTS subjects (
     id  BIGSERIAL PRIMARY KEY,
     subject_name VARCHAR(100) NOT NULL,
     teacher_name VARCHAR(100) NOT NULL,
@@ -10,4 +10,4 @@ CREATE TABLE subjects (
 
 
 -- +goose Down
-DROP TABLE subjects;
+DROP TABLE IF EXISTS subjects;

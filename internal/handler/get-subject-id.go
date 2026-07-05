@@ -23,10 +23,10 @@ func (h *Handler) GetSubjectById(c *gin.Context) {
 		return
 	}
 
-	subject, ok := h.service.GetSubjectById(id)
-	if !ok {
+	subject, err := h.service.GetSubjectById(id)
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "subject not found",
+			"error": err.Error(),
 		})
 		return
 	}

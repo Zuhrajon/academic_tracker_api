@@ -32,5 +32,5 @@ func (s *Service) UpdateGrade(gradeID int, grade model.Grade) (model.Grade, erro
 		return model.Grade{}, fmt.Errorf("update grade error: %w", err)
 	}
 
-	return updateGrade, err
+	return updateGrade, nil
 }

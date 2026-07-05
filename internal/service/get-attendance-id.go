@@ -10,9 +10,9 @@ func (s *Service) GetAttendanceByStudentID(studentID int) ([]model.Attendance, e
 		return nil, errors.New("student_id must not be zero ")
 	}
 
-	_, found := s.repository.GetStudentById(studentID)
-	if !found {
-		return nil, errors.New("student not found")
+	_, err := s.repository.GetStudentById(studentID)
+	if err != nil {
+		return nil, err
 	}
 
 	getAttendanceById, err := s.repository.GetAttendanceByStudentID(studentID)

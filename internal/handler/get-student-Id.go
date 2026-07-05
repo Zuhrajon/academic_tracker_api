@@ -23,8 +23,8 @@ func (h *Handler) GetStudentById(c *gin.Context) {
 		return
 	}
 
-	student, ok := h.service.GetStudentById(id)
-	if !ok {
+	student, err := h.service.GetStudentById(id)
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "student not found",
 		})

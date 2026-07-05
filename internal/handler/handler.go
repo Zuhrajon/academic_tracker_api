@@ -7,14 +7,14 @@ import (
 
 type Service interface {
 	CreateStudents(student model.Student) (model.Student, error)
-	GetStudents() []model.Student
-	GetStudentById(id int) (model.Student, bool)
+	GetStudents() ([]model.Student, error)
+	GetStudentById(id int) (model.Student, error)
 	UpdateStudents(studentID int, student model.Student) (model.Student, error)
 	DeleteStudent(studentId int) error
 
 	CreateSubjects(subject model.Subject) (model.Subject, error)
-	GetSubject() []model.Subject
-	GetSubjectById(id int) (model.Subject, bool)
+	GetSubject() ([]model.Subject, error)
+	GetSubjectById(id int) (model.Subject, error)
 	UpdateSubject(subjectId int, subject model.Subject) (model.Subject, error)
 	DeleteSubjects(subjectId int) error
 

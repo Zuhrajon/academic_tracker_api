@@ -10,9 +10,9 @@ func (s *Service) GetGradesByStudentID(studentID int) ([]model.Grade, error) {
 		return nil, errors.New("student_id must not be zero")
 	}
 
-	_, found := s.repository.GetStudentById(studentID)
-	if !found {
-		return nil, errors.New("student not found")
+	_, err := s.repository.GetStudentById(studentID)
+	if err != nil {
+		return nil, err
 	}
 
 	getGradesById, err := s.repository.GetGradesByStudentID(studentID)

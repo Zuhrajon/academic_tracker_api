@@ -6,7 +6,13 @@ import (
 )
 
 func (h *Handler) GetSubject(c *gin.Context) {
-	subjects := h.service.GetSubject()
+	subjects, err := h.service.GetSubject()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"subjects": subjects,

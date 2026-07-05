@@ -3,15 +3,15 @@ package service
 import "academic-tracker-api/internal/model"
 
 type Repository interface {
-	GetStudents() []model.Student
-	GetStudentById(id int) (model.Student, bool)
+	GetStudents() ([]model.Student, error)
+	GetStudentById(id int) (model.Student, error)
 	CreateStudents(student model.Student) (model.Student, error)
 	UpdateStudents(studentID int, student model.Student) (model.Student, error)
 	DeleteStudent(studentId int) error
 
 	CreateSubjects(subject model.Subject) (model.Subject, error)
-	GetSubject() []model.Subject
-	GetSubjectById(id int) (model.Subject, bool)
+	GetSubject() ([]model.Subject, error)
+	GetSubjectById(id int) (model.Subject, error)
 	UpdateSubject(subjectId int, subject model.Subject) (model.Subject, error)
 	DeleteSubjects(subjectId int) error
 
@@ -34,8 +34,4 @@ func NewService(repository Repository) *Service {
 	return &Service{
 		repository: repository,
 	}
-}
-
-func (s *Service) GetStudents() []model.Student {
-	return s.repository.GetStudents()
 }

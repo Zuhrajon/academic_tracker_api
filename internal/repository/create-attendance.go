@@ -20,5 +20,5 @@ func (r *Repository) CreateAttendance(attendance model.Attendance) (model.Attend
 		return model.Attendance{}, err
 	}
 
-	return attendance, err
+	return attendance, nil
 }

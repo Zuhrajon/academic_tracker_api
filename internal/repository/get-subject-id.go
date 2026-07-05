@@ -3,9 +3,10 @@ package repository
 import (
 	"academic-tracker-api/internal/model"
 	"database/sql"
+	"fmt"
 )
 
-func (r *Repository) GetSubjectById(id int) (model.Subject, bool) {
+func (r *Repository) GetSubjectById(id int) (model.Subject, error) {
 	query := `
 		SELECT id, subject_name, teacher_name, semester
 	FROM subjects
@@ -21,12 +22,12 @@ func (r *Repository) GetSubjectById(id int) (model.Subject, bool) {
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return model.Subject{}, false
+			return model.Subject{}, fmt.Errorf("subject not found")
 		}
 
-		return model.Subject{}, false
+		return model.Subject{}, fmt.Errorf("get subject by id query error: %w", err)
 	}
 
-	return subject, true
+	return subject, nil
 
 }

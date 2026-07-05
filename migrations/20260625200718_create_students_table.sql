@@ -1,6 +1,6 @@
 -- +goose Up
 
-CREATE TABLE students (
+CREATE TABLE IF NOT EXISTS students (
     id BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -13,4 +13,4 @@ CREATE TABLE students (
 
 
 -- +goose Down
-DROP TABLE students;
+DROP TABLE IF EXISTS students;

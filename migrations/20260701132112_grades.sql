@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TABLE grades (
+CREATE TABLE IF NOT EXISTS grades (
     id BIGSERIAL PRIMARY KEY,
     student_id BIGINT NOT NULL REFERENCES students(id),
     subject_id BIGINT NOT NULL REFERENCES subjects(id),
@@ -12,4 +12,4 @@ CREATE TABLE grades (
 
 
 -- +goose Down
-DROP TABLE grades;
+DROP TABLE IF EXISTS grades;
