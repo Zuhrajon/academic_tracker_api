@@ -2,6 +2,7 @@ package repository
 
 import (
 	"academic-tracker-api/internal/model"
+	"database/sql"
 	"fmt"
 )
 
@@ -35,7 +36,11 @@ func (r *Repository) UpdateAttendance(attendanceID int, attendance model.Attenda
 	)
 
 	if err != nil {
-		return model.Attendance{}, fmt.Errorf("error: attendance with this ID was not found: %w", err)
+		if err == sql.ErrNoRows {
+			return model.Attendance{}, fmt.Errorf("attendance not found")
+		}
+
+		return model.Attendance{}, fmt.Errorf("update attendance query error: %w", err)
 	}
 
 	return attendance, nil

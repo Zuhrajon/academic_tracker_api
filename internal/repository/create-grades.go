@@ -1,6 +1,9 @@
 package repository
 
-import "academic-tracker-api/internal/model"
+import (
+	"academic-tracker-api/internal/model"
+	"fmt"
+)
 
 func (r *Repository) CreateGrades(grades model.Grade) (model.Grade, error) {
 	query := `
@@ -17,7 +20,7 @@ func (r *Repository) CreateGrades(grades model.Grade) (model.Grade, error) {
 		grades.Comment,
 	).Scan(&grades.ID)
 	if err != nil {
-		return model.Grade{}, err
+		return model.Grade{}, fmt.Errorf("create grades query error: %w", err)
 	}
 
 	return grades, nil

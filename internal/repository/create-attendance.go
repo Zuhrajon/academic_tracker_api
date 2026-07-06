@@ -1,6 +1,9 @@
 package repository
 
-import "academic-tracker-api/internal/model"
+import (
+	"academic-tracker-api/internal/model"
+	"fmt"
+)
 
 func (r *Repository) CreateAttendance(attendance model.Attendance) (model.Attendance, error) {
 	query := `
@@ -17,7 +20,7 @@ func (r *Repository) CreateAttendance(attendance model.Attendance) (model.Attend
 		attendance.Comment,
 	).Scan(&attendance.ID)
 	if err != nil {
-		return model.Attendance{}, err
+		return model.Attendance{}, fmt.Errorf("create attendance query error: %w", err)
 	}
 
 	return attendance, nil

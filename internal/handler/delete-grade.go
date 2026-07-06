@@ -25,7 +25,7 @@ func (h *Handler) DeleteGrade(c *gin.Context) {
 
 	err = h.service.DeleteGrade(gradeId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
 		})
 		return

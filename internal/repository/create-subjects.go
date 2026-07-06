@@ -1,6 +1,9 @@
 package repository
 
-import "academic-tracker-api/internal/model"
+import (
+	"academic-tracker-api/internal/model"
+	"fmt"
+)
 
 func (r *Repository) CreateSubjects(subject model.Subject) (model.Subject, error) {
 	query := `
@@ -16,7 +19,7 @@ func (r *Repository) CreateSubjects(subject model.Subject) (model.Subject, error
 		subject.Semester,
 	).Scan(&subject.ID)
 	if err != nil {
-		return model.Subject{}, err
+		return model.Subject{}, fmt.Errorf("create subject query error: %w", err)
 	}
 
 	return subject, nil

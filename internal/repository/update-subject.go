@@ -2,6 +2,7 @@ package repository
 
 import (
 	"academic-tracker-api/internal/model"
+	"database/sql"
 	"fmt"
 )
 
@@ -29,7 +30,10 @@ func (r *Repository) UpdateSubject(subjectId int, subjects model.Subject) (model
 	)
 
 	if err != nil {
-		return model.Subject{}, fmt.Errorf("ошибка, предмет с таким id не найден: %w", err)
+		if err == sql.ErrNoRows {
+			return model.Subject{}, fmt.Errorf("subject not found")
+		}
+		return model.Subject{}, fmt.Errorf("update subject query error: %w", err)
 	}
 
 	return subjects, nil

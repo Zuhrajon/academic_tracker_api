@@ -35,7 +35,7 @@ func (h *Handler) UpdateGrade(c *gin.Context) {
 
 	updateGrade, err := h.service.UpdateGrade(id, grade)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return

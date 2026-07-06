@@ -17,15 +17,15 @@ func (h *Handler) DeleteAttendance(c *gin.Context) {
 
 	attendanceId, err := strconv.Atoi(attendanceStr)
 	if err != nil || attendanceId <= 0 {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "Invalid studentID; must be a positive number.\n",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid attendanceId must be a positive number.",
 		})
 		return
 	}
 
 	err = h.service.DeleteAttendance(attendanceId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
 		})
 		return

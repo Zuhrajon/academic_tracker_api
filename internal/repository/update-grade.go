@@ -2,6 +2,7 @@ package repository
 
 import (
 	"academic-tracker-api/internal/model"
+	"database/sql"
 	"fmt"
 )
 
@@ -36,8 +37,10 @@ func (r *Repository) UpdateGrade(gradeID int, grade model.Grade) (model.Grade, e
 	)
 
 	if err != nil {
-		return model.Grade{}, fmt.Errorf("error: update grade query error: %w", err)
+		if err == sql.ErrNoRows {
+			return model.Grade{}, fmt.Errorf("grade not found")
+		}
+		return model.Grade{}, fmt.Errorf("update grade query error: %w", err)
 	}
-
 	return grade, nil
 }

@@ -1,6 +1,9 @@
 package repository
 
-import "academic-tracker-api/internal/model"
+import (
+	"academic-tracker-api/internal/model"
+	"fmt"
+)
 
 func (r *Repository) GetAttendanceByStudentID(studentID int) ([]model.Attendance, error) {
 	query := `
@@ -10,7 +13,7 @@ func (r *Repository) GetAttendanceByStudentID(studentID int) ([]model.Attendance
 `
 	rows, err := r.db.Query(query, studentID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get attendance by student id query error: %w", err)
 	}
 	defer rows.Close()
 
@@ -28,14 +31,14 @@ func (r *Repository) GetAttendanceByStudentID(studentID int) ([]model.Attendance
 			&attendance.Comment,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("scan attendance error: %w", err)
 		}
 
 		attendances = append(attendances, attendance)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("attendance rows error: %w", err)
 	}
 
 	return attendances, nil

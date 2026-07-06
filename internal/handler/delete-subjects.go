@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func (h *Handler) DeleteSubjects(c *gin.Context) {
@@ -25,7 +26,14 @@ func (h *Handler) DeleteSubjects(c *gin.Context) {
 
 	err = h.service.DeleteSubjects(subjectId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		if strings.Contains(err.Error(), "violates foreign key constraint") {
+			c.JSON(http.StatusConflict, gin.H{
+				"error": "subject cannot be deleted because it has grades or attendance records",
+			})
+			return
+		}
+
+		c.JSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
 		})
 		return
