@@ -3,6 +3,9 @@ package service
 import "academic-tracker-api/internal/model"
 
 type Repository interface {
+	CreateUser(user model.User) (model.User, error)
+	GetUserByEmail(email string) (model.User, error)
+
 	GetStudents() ([]model.Student, error)
 	GetStudentById(id int) (model.Student, error)
 	CreateStudents(student model.Student) (model.Student, error)

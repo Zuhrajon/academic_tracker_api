@@ -1,38 +1,66 @@
 # Academic Tracker API
 
-REST API для учета учебных данных: студентов, предметов, посещаемости и оценок.
+Backend-сервис для учета учебных данных студентов: студентов, предметов, посещаемости и оценок.
 
-Проект написан на Go с использованием Gin, PostgreSQL, Docker Compose и goose migrations. Код разделен на слои:
+Проект написан на Go с использованием Gin, PostgreSQL, Docker Compose, goose migrations и JWT-авторизации.
 
-- `handler` - HTTP-ручки и ответы клиенту;
+## Возможности
+
+- регистрация и логин пользователей;
+- JWT-авторизация;
+- роли `admin`, `teacher`, `student`;
+- CRUD для студентов;
+- CRUD для предметов;
+- учет посещаемости;
+- учет оценок;
+- миграции базы данных через goose;
+- запуск приложения и PostgreSQL через Docker Compose.
+
+## Архитектура
+
+Код разделен на слои:
+
+- `handler` - HTTP-роуты, чтение JSON, параметры URL, HTTP-ответы;
 - `service` - бизнес-логика и валидация;
-- `repository` - работа с PostgreSQL;
-- `model` - структуры данных.
+- `repository` - SQL-запросы и работа с PostgreSQL;
+- `model` - структуры данных;
+- `middleware` - JWT-проверка и проверка ролей;
+- `pkg/db` - подключение к PostgreSQL.
+
+Путь запроса:
+
+```text
+client -> handler -> service -> repository -> PostgreSQL
+```
+
+Ответ возвращается обратно:
+
+```text
+PostgreSQL -> repository -> service -> handler -> client
+```
 
 ## Требования
 
 - Go
+- PostgresSql
 - Docker и Docker Compose
 - goose
-- golangci-lint для проверки линтером
 
 ## Запуск
 
-Поднять PostgreSQL и приложение:
+Поднять приложение и PostgreSQL:
 
 ```bash
 make up
 ```
 
-Команда собирает контейнеры и применяет миграции.
-
-Остановить сервис и удалить volume базы:
+Остановить контейнеры и удалить volume базы:
 
 ```bash
 make down
 ```
 
-По умолчанию API доступен на:
+API доступен по адресу:
 
 ```text
 http://localhost:8080
@@ -46,10 +74,10 @@ localhost:5432
 
 ## Миграции
 
-Создать новую миграцию:
+Создать миграцию:
 
 ```bash
-make generate-migration name=create_users_table
+make generate-migration name=create_table_name
 ```
 
 Применить миграции:
@@ -65,123 +93,52 @@ make migration-down
 ```
 
 
-## Проверки
+## Авторизация
 
-Unit-тесты:
-
-```bash
-make test
-```
-
-Линтер:
-
-```bash
-make lint
-```
-
-Полная проверка:
-
-```bash
-make check
-```
-
-## Endpoints
-
-### Students
+Открытые роуты:
 
 ```http
-POST   /students
-GET    /students
-GET    /students/:id
-PUT    /students/:id
-DELETE /students/:id
+POST /auth/register
+POST /auth/login
 ```
 
-### Subjects
-
-```http
-POST   /subjects
-GET    /subjects
-GET    /subjects/:id
-PUT    /subjects/:id
-DELETE /subjects/:id
-```
-
-### Attendance
-
-```http
-POST   /attendance
-GET    /students/:id/attendance
-PUT    /attendance/:id
-DELETE /attendance/:id
-```
-
-### Grades
-
-```http
-POST   /grades
-GET    /students/:id/grades
-PUT    /grades/:id
-DELETE /grades/:id
-```
-
-## Примеры запросов
-
-Создать студента:
-
-```json
-{
-  "first_name": "Zuhro",
-  "last_name": "Karimova",
-  "group_name": "CS-101",
-  "course": 1
-}
-```
-
-Создать предмет:
-
-```json
-{
-  "subject_name": "Databases",
-  "teacher_name": "Hasan",
-  "semester": 2
-}
-```
-
-Создать посещаемость:
-
-```json
-{
-  "student_id": 1,
-  "subject_id": 1,
-  "lesson_date": "2026-07-05",
-  "status": "present",
-  "comment": "on time"
-}
-```
-
-Создать оценку:
-
-```json
-{
-  "student_id": 1,
-  "subject_id": 1,
-  "grade_date": "2026-07-05",
-  "grade": 9,
-  "comment": "good work"
-}
-```
-
-## Статусы посещаемости
-
-Допустимые значения поля `status`:
+Все остальные роуты требуют JWT-токен в заголовке:
 
 ```text
-present
-absent
-late
+Authorization: Bearer <token>
 ```
 
-## Оценки
 
-Поле `grade` должно быть в диапазоне от `1` до `10`.
+## Роли
+
+`admin`:
+
+- может создавать, смотреть, изменять и удалять студентов;
+- может создавать, смотреть, изменять и удалять предметы;
+- может смотреть оценки и посещаемость.
+
+`teacher`:
+
+- может смотреть студентов и предметы;
+- может создавать, изменять и удалять оценки;
+- может создавать, изменять и удалять посещаемость.
+
+`student`:
+
+- может смотреть студентов, предметы, оценки и посещаемость по доступным роутам.
+
+
+
+## Основной сценарий проверки
+
+1. Зарегистрировать `admin`.
+2. Войти через `/auth/login`.
+3. Скопировать JWT-токен.
+4. Передавать токен в заголовке `Authorization: Bearer <token>`.
+5. Создать студента.
+6. Создать предмет.
+7. Добавить посещаемость.
+8. Поставить оценку.
+9. Получить данные студента.
+10. Изменить оценку.
+

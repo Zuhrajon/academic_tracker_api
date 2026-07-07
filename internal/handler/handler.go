@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"academic-tracker-api/internal/middleware"
 	"academic-tracker-api/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
 type Service interface {
+	Register(request model.RegisterRequest) (model.User, error)
+	Login(request model.LoginRequest) (model.LoginResponse, error)
+
 	CreateStudents(student model.Student) (model.Student, error)
 	GetStudents() ([]model.Student, error)
 	GetStudentById(id int) (model.Student, error)
@@ -40,26 +44,30 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) InitRoutes(router *gin.Engine) {
-	router.GET("/students", h.GetStudents)
-	router.GET("/students/:id", h.GetStudentById)
-	router.POST("/students", h.CreateStudents)
-	router.PUT("/students/:id", h.UpdateStudents)
-	router.DELETE("/students/:id", h.DeleteStudent)
+	router.POST("/auth/register", h.Register)
+	router.POST("/auth/login", h.Login)
+	authorized := router.Group("/")
+	authorized.Use(middleware.AuthMiddleware())
 
-	router.POST("/subjects", h.CreateSubjects)
-	router.GET("/subjects", h.GetSubject)
-	router.GET("/subjects/:id", h.GetSubjectById)
-	router.PUT("/subjects/:id", h.UpdateSubject)
-	router.DELETE("/subjects/:id", h.DeleteSubjects)
+	authorized.GET("/students", middleware.RoleMiddleware(model.RoleAdmin, model.RoleTeacher), h.GetStudents)
+	authorized.GET("/students/:id", middleware.RoleMiddleware(model.RoleAdmin, model.RoleTeacher, model.RoleStudent), h.GetStudentById)
+	authorized.POST("/students", middleware.RoleMiddleware(model.RoleAdmin), h.CreateStudents)
+	authorized.PUT("/students/:id", middleware.RoleMiddleware(model.RoleAdmin), h.UpdateStudents)
+	authorized.DELETE("/students/:id", middleware.RoleMiddleware(model.RoleAdmin), h.DeleteStudent)
 
-	router.POST("/attendance", h.CreateAttendance)
-	router.GET("/students/:id/attendance", h.GetAttendanceByStudentID)
-	router.PUT("/attendance/:id", h.UpdateAttendance)
-	router.DELETE("/attendance/:id", h.DeleteAttendance)
+	authorized.POST("/subjects", middleware.RoleMiddleware(model.RoleAdmin), h.CreateSubjects)
+	authorized.GET("/subjects", middleware.RoleMiddleware(model.RoleAdmin, model.RoleTeacher, model.RoleStudent), h.GetSubject)
+	authorized.GET("/subjects/:id", middleware.RoleMiddleware(model.RoleAdmin, model.RoleTeacher, model.RoleStudent), h.GetSubjectById)
+	authorized.PUT("/subjects/:id", middleware.RoleMiddleware(model.RoleAdmin), h.UpdateSubject)
+	authorized.DELETE("/subjects/:id", middleware.RoleMiddleware(model.RoleAdmin), h.DeleteSubjects)
 
-	router.POST("/grades", h.CreateGrades)
-	router.GET("/students/:id/grades", h.GetGradesByStudentID)
-	router.PUT("/grades/:id", h.UpdateGrade)
-	router.DELETE("/grades/:id", h.DeleteGrade)
+	authorized.POST("/attendance", middleware.RoleMiddleware(model.RoleTeacher), h.CreateAttendance)
+	authorized.GET("/students/:id/attendance", middleware.RoleMiddleware(model.RoleAdmin, model.RoleTeacher, model.RoleStudent), h.GetAttendanceByStudentID)
+	authorized.PUT("/attendance/:id", middleware.RoleMiddleware(model.RoleTeacher), h.UpdateAttendance)
+	authorized.DELETE("/attendance/:id", middleware.RoleMiddleware(model.RoleTeacher), h.DeleteAttendance)
 
+	authorized.POST("/grades", middleware.RoleMiddleware(model.RoleTeacher), h.CreateGrades)
+	authorized.GET("/students/:id/grades", middleware.RoleMiddleware(model.RoleAdmin, model.RoleTeacher, model.RoleStudent), h.GetGradesByStudentID)
+	authorized.PUT("/grades/:id", middleware.RoleMiddleware(model.RoleTeacher), h.UpdateGrade)
+	authorized.DELETE("/grades/:id", middleware.RoleMiddleware(model.RoleTeacher), h.DeleteGrade)
 }
