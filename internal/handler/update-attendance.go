@@ -33,11 +33,14 @@ func (h *Handler) UpdateAttendance(c *gin.Context) {
 		return
 	}
 
-	updateAttendance, err := h.service.UpdateAttendance(attendanceId, attendance)
+	actorUserID, actorRole, ok := getAuthUser(c)
+	if !ok {
+		return
+	}
+
+	updateAttendance, err := h.service.UpdateAttendance(attendanceId, attendance, actorUserID, actorRole)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		writeAccessError(c, err)
 		return
 	}
 

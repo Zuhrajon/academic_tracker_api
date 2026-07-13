@@ -8,7 +8,7 @@ import (
 
 func (r *Repository) GetSubjectById(id int) (model.Subject, error) {
 	query := `
-		SELECT id, subject_name, teacher_name, semester
+		SELECT id, subject_name, teacher_name, COALESCE(teacher_user_id, 0), semester
 	FROM subjects
 	WHERE id = $1
 `
@@ -18,6 +18,7 @@ func (r *Repository) GetSubjectById(id int) (model.Subject, error) {
 		&subject.ID,
 		&subject.SubjectName,
 		&subject.TeacherName,
+		&subject.TeacherUserID,
 		&subject.Semester,
 	)
 	if err != nil {

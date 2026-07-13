@@ -23,14 +23,16 @@ type Service interface {
 	DeleteSubjects(subjectId int) error
 
 	CreateAttendance(attendance model.Attendance) (model.Attendance, error)
+	CreateAttendanceForUser(attendance model.Attendance, actorUserID int, actorRole string) (model.Attendance, error)
 	GetAttendanceByStudentID(studentID int) ([]model.Attendance, error)
-	UpdateAttendance(attendanceID int, attendance model.Attendance) (model.Attendance, error)
-	DeleteAttendance(attendanceId int) error
+	UpdateAttendance(attendanceID int, attendance model.Attendance, actorUserID int, actorRole string) (model.Attendance, error)
+	DeleteAttendance(attendanceId int, actorUserID int, actorRole string) error
 
 	CreateGrades(grades model.Grade) (model.Grade, error)
+	CreateGradesForUser(grades model.Grade, actorUserID int, actorRole string) (model.Grade, error)
 	GetGradesByStudentID(studentID int) ([]model.Grade, error)
-	UpdateGrade(gradeID int, grade model.Grade) (model.Grade, error)
-	DeleteGrade(gradeID int) error
+	UpdateGrade(gradeID int, grade model.Grade, actorUserID int, actorRole string) (model.Grade, error)
+	DeleteGrade(gradeID int, actorUserID int, actorRole string) error
 }
 
 type Handler struct {

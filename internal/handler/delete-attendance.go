@@ -23,11 +23,14 @@ func (h *Handler) DeleteAttendance(c *gin.Context) {
 		return
 	}
 
-	err = h.service.DeleteAttendance(attendanceId)
+	actorUserID, actorRole, ok := getAuthUser(c)
+	if !ok {
+		return
+	}
+
+	err = h.service.DeleteAttendance(attendanceId, actorUserID, actorRole)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": err.Error(),
-		})
+		writeAccessError(c, err)
 		return
 	}
 

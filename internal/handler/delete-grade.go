@@ -23,11 +23,14 @@ func (h *Handler) DeleteGrade(c *gin.Context) {
 		return
 	}
 
-	err = h.service.DeleteGrade(gradeId)
+	actorUserID, actorRole, ok := getAuthUser(c)
+	if !ok {
+		return
+	}
+
+	err = h.service.DeleteGrade(gradeId, actorUserID, actorRole)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": err.Error(),
-		})
+		writeAccessError(c, err)
 		return
 	}
 

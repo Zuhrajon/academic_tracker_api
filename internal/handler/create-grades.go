@@ -17,11 +17,14 @@ func (h *Handler) CreateGrades(c *gin.Context) {
 		return
 	}
 
-	createGrades, err := h.service.CreateGrades(grades)
+	actorUserID, actorRole, ok := getAuthUser(c)
+	if !ok {
+		return
+	}
+
+	createGrades, err := h.service.CreateGradesForUser(grades, actorUserID, actorRole)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		writeAccessError(c, err)
 		return
 	}
 

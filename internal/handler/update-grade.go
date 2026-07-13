@@ -33,11 +33,14 @@ func (h *Handler) UpdateGrade(c *gin.Context) {
 		return
 	}
 
-	updateGrade, err := h.service.UpdateGrade(id, grade)
+	actorUserID, actorRole, ok := getAuthUser(c)
+	if !ok {
+		return
+	}
+
+	updateGrade, err := h.service.UpdateGrade(id, grade, actorUserID, actorRole)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		writeAccessError(c, err)
 		return
 	}
 

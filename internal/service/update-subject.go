@@ -18,6 +18,19 @@ func (s *Service) UpdateSubject(subjectId int, subject model.Subject) (model.Sub
 		return model.Subject{}, fmt.Errorf("teacher_name is required")
 	}
 
+	if subject.TeacherUserID <= 0 {
+		return model.Subject{}, fmt.Errorf("teacher_user_id is required")
+	}
+
+	teacher, err := s.repository.GetUserByID(subject.TeacherUserID)
+	if err != nil {
+		return model.Subject{}, fmt.Errorf("teacher user not found")
+	}
+
+	if teacher.Role != model.RoleTeacher {
+		return model.Subject{}, fmt.Errorf("teacher_user_id must belong to teacher")
+	}
+
 	if subject.Semester <= 0 {
 		return model.Subject{}, fmt.Errorf("semester must be greater than zero")
 	}

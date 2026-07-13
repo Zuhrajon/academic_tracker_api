@@ -3,6 +3,7 @@ package service
 import (
 	"academic-tracker-api/internal/model"
 	"errors"
+	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -31,7 +32,7 @@ func (s *Service) Login(request model.LoginRequest) (model.LoginResponse, error)
 
 	token, err := generateToken(user)
 	if err != nil {
-		return model.LoginResponse{}, err
+		return model.LoginResponse{}, fmt.Errorf("failed to generate token: %w", err)
 	}
 
 	return model.LoginResponse{

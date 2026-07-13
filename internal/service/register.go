@@ -3,6 +3,7 @@ package service
 import (
 	"academic-tracker-api/internal/model"
 	"errors"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -27,13 +28,28 @@ func (s *Service) Register(request model.RegisterRequest) (model.User, error) {
 		return model.User{}, errors.New("student_id is required for student role")
 	}
 
+	if request.Role == model.RoleStudent {
+		_, err := s.repository.GetStudentById(request.StudentID)
+		if err != nil {
+			return model.User{}, errors.New("student not found")
+		}
+
+		exists, err := s.repository.UserExistsByStudentID(request.StudentID)
+		if err != nil {
+			return model.User{}, fmt.Errorf("failed to check student user: %w", err)
+		}
+		if exists {
+			return model.User{}, errors.New("student already has user account")
+		}
+	}
+
 	if request.Role != model.RoleStudent {
 		request.StudentID = 0
 	}
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return model.User{}, err
+		return model.User{}, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	user := model.User{
@@ -45,7 +61,7 @@ func (s *Service) Register(request model.RegisterRequest) (model.User, error) {
 
 	createdUser, err := s.repository.CreateUser(user)
 	if err != nil {
-		return model.User{}, err
+		return model.User{}, fmt.Errorf("failed to create user: %w", err)
 	}
 
 	return createdUser, nil

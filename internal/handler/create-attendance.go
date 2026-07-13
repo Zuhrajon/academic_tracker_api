@@ -17,11 +17,14 @@ func (h *Handler) CreateAttendance(c *gin.Context) {
 		return
 	}
 
-	createAttendance, err := h.service.CreateAttendance(attendance)
+	actorUserID, actorRole, ok := getAuthUser(c)
+	if !ok {
+		return
+	}
+
+	createAttendance, err := h.service.CreateAttendanceForUser(attendance, actorUserID, actorRole)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		writeAccessError(c, err)
 		return
 	}
 
